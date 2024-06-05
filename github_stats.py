@@ -37,7 +37,7 @@ class Stats:
                 }
             }
         }
-        """ % (self.user, "false" if not self.consider_forked_repos else "true")
+        """ %("sunghj1118", "false" if not self.consider_forked_repos else "true")
 
         async with self.session.post('https://api.github.com/graphql', json={'query': query}, headers=self.headers) as response:
             if response.status != 200:
@@ -45,7 +45,7 @@ class Stats:
                 raise Exception(f"GitHub API returned status {response.status}")
 
             data = await response.json()
-            logging.info("GitHub API response: %s", data)
+            logging.info("GitHub API response data: %s", data)
 
             user_data = data.get("data", {}).get("user")
             if not user_data:
