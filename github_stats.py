@@ -56,12 +56,9 @@ class Stats:
             for repo in self.repos:
                 if not repo:
                     logging.warning("Encountered None repo in the response")
-                name = repo.get("nameWithOwner")
-                stargazers = repo.get("stargazerCount")
-                forks = repo.get("forkCount")
-                languages = repo.get("languages", {}).get("edges", [])
-
-                logging.info("Repository: %s, Stars: %d, Forks: %d, Languages: %s", name, stargazers, forks, languages)
+                else:
+                    logging.info("Repository: %s", repo.get("nameWithOwner"))
+                    # Add other processing steps if needed
 
     @property
     async def languages(self):
@@ -72,37 +69,50 @@ class Stats:
                 if language not in languages:
                     languages[language] = {"size": 0, "color": edge.get("node", {}).get("color", "#000000")}
                 languages[language]["size"] += edge.get("size", 0)
+        logging.info("Languages: %s", languages)
         return languages
 
     @property
     async def stargazers(self):
-        return sum(repo.get("stargazerCount", 0) for repo in self.repos)
+        stargazers = sum(repo.get("stargazerCount", 0) for repo in self.repos)
+        logging.info("Total stargazers: %d", stargazers)
+        return stargazers
 
     @property
     async def forks(self):
-        return sum(repo.get("forkCount", 0) for repo in self.repos)
+        forks = sum(repo.get("forkCount", 0) for repo in self.repos)
+        logging.info("Total forks: %d", forks)
+        return forks
 
     @property
     async def total_contributions(self):
         # Example implementation, replace with actual logic
-        return 0
+        contributions = 0  # Fetch and calculate actual contributions
+        logging.info("Total contributions: %d", contributions)
+        return contributions
 
     @property
     async def lines_changed(self):
         # Example implementation, replace with actual logic
-        return (0, 0)
+        lines_changed = (0, 0)  # Fetch and calculate actual lines changed
+        logging.info("Lines changed: %s", lines_changed)
+        return lines_changed
 
     @property
     async def views(self):
         # Example implementation, replace with actual logic
-        return 0
+        views = 0  # Fetch and calculate actual views
+        logging.info("Total views: %d", views)
+        return views
 
     @property
     async def all_repos(self):
+        logging.info("Repositories: %s", self.repos)
         return self.repos
 
     @property
     async def name(self):
+        logging.info("User name: %s", self.user)
         return self.user
 
 # Add this at the top of your script to enable logging

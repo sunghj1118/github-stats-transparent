@@ -34,14 +34,35 @@ async def generate_overview(s: Stats) -> None:
     with open("templates/overview.svg", "r") as f:
         output = f.read()
 
-    output = re.sub("{{ name }}", await s.name, output)
-    output = re.sub("{{ stars }}", f"{await s.stargazers:,}", output)
-    output = re.sub("{{ forks }}", f"{await s.forks:,}", output)
-    output = re.sub("{{ contributions }}", f"{await s.total_contributions:,}", output)
-    changed = (await s.lines_changed)[0] + (await s.lines_changed)[1]
+    # Add logging to verify data insertion
+    name = await s.name
+    logging.info(f"Name: {name}")
+    output = re.sub("{{ name }}", name, output)
+
+    stars = await s.stargazers
+    logging.info(f"Stars: {stars}")
+    output = re.sub("{{ stars }}", f"{stars:,}", output)
+
+    forks = await s.forks
+    logging.info(f"Forks: {forks}")
+    output = re.sub("{{ forks }}", f"{forks:,}", output)
+
+    contributions = await s.total_contributions
+    logging.info(f"All-time contributions: {contributions}")
+    output = re.sub("{{ contributions }}", f"{contributions:,}", output)
+
+    lines_changed = await s.lines_changed
+    changed = lines_changed[0] + lines_changed[1]
+    logging.info(f"Lines of code changed: {changed}")
     output = re.sub("{{ lines_changed }}", f"{changed:,}", output)
-    output = re.sub("{{ views }}", f"{await s.views:,}", output)
-    output = re.sub("{{ repos }}", f"{len(await s.all_repos):,}", output)
+
+    views = await s.views
+    logging.info(f"Repository views (past two weeks): {views}")
+    output = re.sub("{{ views }}", f"{views:,}", output)
+
+    repos = await s.all_repos
+    logging.info(f"Repositories with contributions: {len(repos)}")
+    output = re.sub("{{ repos }}", f"{len(repos):,}", output)
 
     generate_output_folder()
     with open("generated/overview.svg", "w") as f:
