@@ -1,6 +1,5 @@
 name: Generate Stats Images
 
-# Controls when the action will run. Triggers the workflow on push events
 on:
   push:
     branches: [ main ]
@@ -8,42 +7,31 @@ on:
     - cron: "0 0 * * *"
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Sequence of tasks that will be executed as part of the job
     steps:
-    # Checks-out repository under $GITHUB_WORKSPACE, so the job can access it
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3
 
-    # Run using Python 3.8 for consistency and aiohttp
     - name: Set up Python 3.8
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@4a6a3fc4a230e4d5998f8030cd1146f623a210db
       with:
         python-version: '3.8'
         architecture: 'x64'
 
-    # Cache dependencies. From:
-    # https://github.com/actions/cache/blob/master/examples.md#python---pip
-    - uses: actions/cache@v3
+    - uses: actions/cache@f36e94b09b5aef0b3e2d7975b3e69a7d19594832
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
     
-        
-    # Install dependencies with `pip`
     - name: Install requirements
       run: |
         python3 -m pip install --upgrade pip setuptools wheel
         python3 -m pip install -r requirements.txt
 
-    # Generate all statistics images
     - name: Generate images
       run: |
         python3 --version
@@ -55,7 +43,6 @@ jobs:
         EXCLUDED_LANGS: ${{ secrets.EXCLUDED_LANGS }}
         COUNT_STATS_FROM_FORKS: ${{ secrets.COUNT_STATS_FROM_FORKS }}
 
-    # Commits all changed files to the repository
     - name: Commit to the output branch of repo
       run: |
         git config --global user.name "github-stats[bot]"
@@ -63,6 +50,5 @@ jobs:
         git add .
         git commit -m 'temp commit' || echo
         git checkout output 2>/dev/null || git checkout --orphan output && git rm -rf . && git checkout main -- generated/
-        # "echo" returns true so the build succeeds, even if no changed files
         git commit -m 'Update generated files' || echo
         git push origin output -f
