@@ -12,15 +12,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@8f4b7f84864484a7bf31766abe9204da3cbe65b3
+    - uses: actions/checkout@v4
 
     - name: Set up Python 3.8
-      uses: actions/setup-python@4a6a3fc4a230e4d5998f8030cd1146f623a210db
+      uses: actions/setup-python@v4
       with:
         python-version: '3.8'
         architecture: 'x64'
 
-    - uses: actions/cache@f36e94b09b5aef0b3e2d7975b3e69a7d19594832
+    - uses: actions/cache@v4
       with:
         path: ~/.cache/pip
         key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
