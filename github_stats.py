@@ -328,7 +328,7 @@ Languages:
 
                 for lang in repo.get("languages", {}).get("edges", []):
                     lang_name = lang.get("node", {}).get("name", "Other")
-                    if lang_name == "Jupyter Notebook" or lang_name in self._exclude_langs:
+                    if lang_name in ["Jupyter Notebook", "HTML"] or lang_name in self._exclude_langs:
                         continue
                     languages = await self.languages
                     if lang_name in languages:
@@ -518,7 +518,7 @@ async def main() -> None:
     access_token = os.getenv("ACCESS_TOKEN")
     user = os.getenv("GITHUB_ACTOR")
     async with aiohttp.ClientSession() as session:
-        s = Stats(user, access_token, session, exclude_langs={"Jupyter Notebook"})
+        s = Stats(user, access_token, session, exclude_langs={"Jupyter Notebook", "HTML"})
         print(await s.to_str())
 
 
